@@ -3,9 +3,6 @@ package excel_manager;
 /**
  * Created by davem on 24/09/2015.
  */
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -14,9 +11,14 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import utils.Participant;
 import utils.Person;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class Loader {
 
@@ -24,7 +26,7 @@ public class Loader {
         LinkedList<Person> attendees_list = new LinkedList<Person>();
         try{
             XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(path));
-            XSSFSheet sheet = (XSSFSheet) wb.getSheetAt(0);
+            XSSFSheet sheet = wb.getSheetAt(0);
             XSSFRow row;
             XSSFCell cell;
 
@@ -117,7 +119,7 @@ public class Loader {
         return participantHashMap;
     }
 
-    public static void create(HashMap<Integer, Person> attendee_number, String file){
+    public static void createOutput(HashMap<Integer, Person> attendee_number, String file) {
         try {
 
             // Let's instantiate some useful things we'll be using later
@@ -194,6 +196,58 @@ public class Loader {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean writeInOut(String excelFile, HashMap<Integer, Participant> participantHashMap) {
+        try {
+            XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(excelFile));
+            XSSFSheet sheet = wb.getSheetAt(0);
+            XSSFRow row;
+            XSSFCell cell;
+
+            int rows; // No of rows
+            rows = sheet.getPhysicalNumberOfRows();
+
+            int cols = 0; // No of columns
+            int tmp = 0;
+
+		    /* This trick ensures that we get the data properly even if it doesn't start from first few rows */
+            for (int i = 0; i < 10 || i < rows; i++) {
+                row = sheet.getRow(i);
+                if (row != null) {
+                    tmp = sheet.getRow(i).getPhysicalNumberOfCells();
+                    if (tmp > cols) cols = tmp;
+                }
+            }
+
+            for (int r = 1; r < rows; r++) {
+                row = sheet.getRow(r);
+                if (row != null) {
+                    cell = row.getCell(3);
+                    int cellValue = (int) cell.getNumericCellValue();
+                    if (participantHashMap.containsKey(cellValue)) {
+                        Participant p1 = participantHashMap.get(cellValue);
+                        cell = row.getCell(4);
+                        cell.setCellValue(p1.getEntrataString());
+                        cell = row.getCell(5);
+                        cell.setCellValue(p1.getUscitaString());
+                    }
+                }
+            }
+
+            FileOutputStream outputFile = new FileOutputStream(new File(excelFile));
+            //write changes
+            wb.write(outputFile);
+            //close the stream
+            outputFile.close();
+            wb.close();
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 
 }

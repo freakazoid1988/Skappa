@@ -9,6 +9,8 @@ import java.util.Calendar;
 public class Participant {
     private int number;
     private long entrata, uscita;
+
+
     private String entrataString, uscitaString;
 
     public Participant(int number, long entrata, long uscita) {
@@ -49,6 +51,22 @@ public class Participant {
 
     public void setUscita(long uscita) {
         this.uscita = uscita;
+    }
+
+    public String getEntrataString() {
+        return entrataString;
+    }
+
+    public void setEntrataString(String entrataString) {
+        this.entrataString = entrataString;
+    }
+
+    public String getUscitaString() {
+        return uscitaString;
+    }
+
+    public void setUscitaString(String uscitaString) {
+        this.uscitaString = uscitaString;
     }
 
     @Override
