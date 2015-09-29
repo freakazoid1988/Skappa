@@ -99,7 +99,12 @@ public class Event {
                         }
                     }
                 }
-                String filePath = "C:\\QRs\\"+String.valueOf(pair.getKey())+".png";
+                String home = System.getProperty("user.home");
+                File QRDir = new File(home+"/QRs/");
+                if(!QRDir.exists()){
+                    QRDir.mkdirs();
+                }
+                String filePath = QRDir+"/"+String.valueOf(pair.getKey())+".png";
                 File myFile = new File(filePath);
                 ImageIO.write(image, fileType, myFile);
             } catch (WriterException e) {

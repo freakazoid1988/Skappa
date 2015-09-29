@@ -3,13 +3,12 @@ package main;
 /**
  * Created by davem on 24/09/2015.
  */
+import java.io.File;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 import event.Event;
-import excel_manager.ExcelGenerator;
 import excel_manager.Loader;
-import utils.Mailer;
 import utils.Person;
 
 public class Main {
@@ -17,6 +16,7 @@ public class Main {
     public static void main(String[] args) {
         String path = args[0];
         String path2 = args[1];
+        String path3 = args[2];
 
         LinkedList<Person> l = Loader.generateList(path);
 
@@ -29,13 +29,16 @@ public class Main {
         ev.toString();
         ev.assignQR();
 
-        ExcelGenerator eg = new ExcelGenerator(ev.getAttendee_number());
-        eg.create(path2);
-
+        Loader.create(ev.getAttendee_number(), path2);
 
         // Temporarily comment
-        Mailer mailer = new Mailer(ev);
-        mailer.send();
+        //Mailer mailer = new Mailer(ev);
+        //mailer.send();
+
+        File f = new File(path3);
+        Loader.loadParticipants(f);
+
+
     }
 
 }
