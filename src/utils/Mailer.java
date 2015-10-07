@@ -35,7 +35,7 @@ public class Mailer {
 
     public void send(){
         final String username = "gaetano.belcastro@gmail.com";
-        final String password = "gaetano88";
+        final String password = "";
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
 

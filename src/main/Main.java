@@ -21,13 +21,13 @@ public class Main {
         String path2 = args[1];
         String path3;
 
-        LinkedList<Person> l = Loader.generateList(path);
+        /*LinkedList<Person> l = Loader.generateList(path);
 
         for(Person p:l){
             System.out.println(p.toString());
-        }
+        }*/
 
-        Event ev = new Event("Birra al pub", "Cotronei", "KR", new GregorianCalendar(2015, 8, 26, 21, 30), l);
+        /*Event ev = new Event("Birra al pub", "Cotronei", "KR", new GregorianCalendar(2015, 9, 7, 21, 30), l);
         ev.assignNumber();
         ev.toString();
         ev.assignQR();
@@ -36,7 +36,7 @@ public class Main {
 
         // Temporarily comment
         Mailer mailer = new Mailer(ev);
-        mailer.send();
+        mailer.send();*/
 
 
         Scanner sc = new Scanner(System.in);
