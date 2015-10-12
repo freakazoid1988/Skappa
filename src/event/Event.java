@@ -4,44 +4,29 @@ package event;
  * Created by davem on 24/09/2015.
  */
 
-        import java.awt.Color;
-        import java.awt.Graphics2D;
-        import java.awt.image.BufferedImage;
-        import java.io.File;
-        import java.io.IOException;
-        import java.util.Date;
-        import java.util.GregorianCalendar;
-        import java.util.HashMap;
-        import java.util.Hashtable;
-        import java.util.Iterator;
-        import java.util.LinkedList;
-        import java.util.Map;
-        import java.util.Map.Entry;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import utils.Person;
 
-        import javax.imageio.ImageIO;
-
-        import com.google.zxing.BarcodeFormat;
-        import com.google.zxing.EncodeHintType;
-        import com.google.zxing.WriterException;
-        import com.google.zxing.common.BitMatrix;
-        import com.google.zxing.qrcode.QRCodeWriter;
-        import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-
-        import utils.Person;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class Event {
 
+    GregorianCalendar date;
     private HashMap<Integer, Person> attendee_number;
-    public HashMap<Integer, Person> getAttendee_number() {
-        return attendee_number;
-    }
-
-
     private HashMap<Integer, BufferedImage> attendee_qr;
     private LinkedList<Person> attendees;
     private String name, location, province;
-    GregorianCalendar date;
-
     public Event(String name, String location, String province, GregorianCalendar date, LinkedList<Person> attendees){
         this.attendees = attendees;
         attendee_number = new HashMap<Integer, Person>();
@@ -52,6 +37,9 @@ public class Event {
         this.date = date;
     }
 
+    public HashMap<Integer, Person> getAttendee_number() {
+        return attendee_number;
+    }
 
     public void assignNumber(){
         int randomCode = (int)(Math.random()*10000);
@@ -67,7 +55,7 @@ public class Event {
         }
     }
 
-    public void assignQR(){
+    public void assignQR(String path) {
         int size = 500;
         String fileType = "png";
         Iterator<Entry<Integer, Person>> it = attendee_number.entrySet().iterator();
@@ -99,8 +87,9 @@ public class Event {
                         }
                     }
                 }
-                String home = System.getProperty("user.home");
-                File QRDir = new File(home+"/QRs/");
+                //String home = System.getProperty("user.home");
+
+                File QRDir = new File(path + "/QRs/");
                 if(!QRDir.exists()){
                     QRDir.mkdirs();
                 }
