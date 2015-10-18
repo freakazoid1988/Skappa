@@ -11,13 +11,15 @@ import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
-public class FrontEnd1 {
+public class FrontEnd1 implements ActionListener, PropertyChangeListener {
 
     private static String[] provinceArray = {"CS", "KR", "CZ", "VV", "RC"}, mesiArray = {"gennaio", "febbraio",
             "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"},
@@ -29,7 +31,6 @@ public class FrontEnd1 {
     private String inputFilePath, outputFolderPath, excelOutputFilePath, txtOutputFilePath;
     private JTextField textFieldNome;
     private JTextField textFieldLuogo;
-    private JTextField textField_3;
     private JTextField textFieldEmail;
     private JTextField textFieldUsername;
     private JPasswordField passwordField;
@@ -42,6 +43,8 @@ public class FrontEnd1 {
     private JTextField textField_1;
     private JTextField textField_2;
     private JPanel panelCaricaPartecipanti;
+    private JButton btnNewButton_5;
+    private JProgressBar progressBar;
 
     /**
      * Create the application.
@@ -104,8 +107,9 @@ public class FrontEnd1 {
      */
     private void initialize() {
         frame = new JFrame("SkAppA");
-        frame.setBounds(100, 100, 450, 300);
+        frame.setBounds(100, 100, 750, 450);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
 
 		/*  */
         ImageIcon imIcon = new
@@ -126,15 +130,16 @@ public class FrontEnd1 {
 
         JPanel panelInviaMail = new JPanel();
         frame.getContentPane().add(panelInviaMail, "name_74765522122111");
+        frame.setBounds(100, 100, 750, 400);
         panelInviaMail.setLayout(new BorderLayout(0, 0));
 
         JPanel panel_6 = new JPanel();
         panelInviaMail.add(panel_6, BorderLayout.CENTER);
         GridBagLayout gbl_panel_6 = new GridBagLayout();
         gbl_panel_6.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        gbl_panel_6.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_panel_6.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         gbl_panel_6.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-        gbl_panel_6.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panel_6.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         panel_6.setLayout(gbl_panel_6);
 
         JLabel lblIndirizzoEmail = new JLabel("Indirizzo email");
@@ -202,19 +207,30 @@ public class FrontEnd1 {
 
         JLabel lblPortaServerSmtp = new JLabel("Porta server smtp");
         GridBagConstraints gbc_lblPortaServerSmtp = new GridBagConstraints();
-        gbc_lblPortaServerSmtp.insets = new Insets(0, 0, 0, 5);
+        gbc_lblPortaServerSmtp.insets = new Insets(0, 0, 5, 5);
         gbc_lblPortaServerSmtp.gridx = 3;
         gbc_lblPortaServerSmtp.gridy = 9;
         panel_6.add(lblPortaServerSmtp, gbc_lblPortaServerSmtp);
 
         textFieldSMTPPort = new JTextField();
         GridBagConstraints gbc_textFieldSMTPPort = new GridBagConstraints();
-        gbc_textFieldSMTPPort.insets = new Insets(0, 0, 0, 5);
+        gbc_textFieldSMTPPort.insets = new Insets(0, 0, 5, 5);
         gbc_textFieldSMTPPort.fill = GridBagConstraints.HORIZONTAL;
         gbc_textFieldSMTPPort.gridx = 5;
         gbc_textFieldSMTPPort.gridy = 9;
         panel_6.add(textFieldSMTPPort, gbc_textFieldSMTPPort);
         textFieldSMTPPort.setColumns(10);
+
+        progressBar = new JProgressBar();
+        GridBagConstraints gbc_progressBar = new GridBagConstraints();
+        gbc_progressBar.fill = GridBagConstraints.HORIZONTAL;
+        gbc_progressBar.insets = new Insets(0, 0, 5, 5);
+        gbc_progressBar.gridx = 5;
+        gbc_progressBar.gridy = 11;
+        panel_6.add(progressBar, gbc_progressBar);
+        progressBar.setVisible(false);
+        
+        
 
         JPanel panel_7 = new JPanel();
         panelInviaMail.add(panel_7, BorderLayout.NORTH);
@@ -226,18 +242,12 @@ public class FrontEnd1 {
         JPanel panel_8 = new JPanel();
         panelInviaMail.add(panel_8, BorderLayout.SOUTH);
 
-        JButton btnNewButton_5 = new JButton("Invia");
+        btnNewButton_5 = new JButton("Invia");
         btnNewButton_5.setPreferredSize(new Dimension(70, 25));
-        btnNewButton_5.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mailer = new Mailer(evento, outputFolderPath, textFieldEmail.getText(), textFieldUsername.getText(), passwordField.getPassword(), textFieldSMTP.getText(), textFieldSMTPPort.getText());
-                boolean successful = mailer.send();
-                if (!successful) {
-                    JOptionPane.showMessageDialog(frame, "Errore nell'invio delle email.", "Errore", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
+        btnNewButton_5.addActionListener(this); 
+       
         panel_8.add(btnNewButton_5);
+
 
         JButton btnNewButton_6 = new JButton("Annulla");
         btnNewButton_6.setPreferredSize(new Dimension(70, 25));
@@ -517,48 +527,6 @@ public class FrontEnd1 {
         gbc_horizontalStrut.gridy = 2;
         panel_3.add(horizontalStrut, gbc_horizontalStrut);
 
-        JLabel lblFileOutput = new JLabel("Inserisci nome file di output");
-        GridBagConstraints gbc_lblFileOutput = new GridBagConstraints();
-        gbc_lblFileOutput.insets = new Insets(0, 0, 0, 5);
-        gbc_lblFileOutput.gridx = 3;
-        gbc_lblFileOutput.gridy = 2;
-        panel_3.add(lblFileOutput, gbc_lblFileOutput);
-
-        textField_3 = new JTextField();
-        textField_3.setPreferredSize(new Dimension(6, 25));
-        GridBagConstraints gbc_textField_3 = new GridBagConstraints();
-        gbc_textField_3.insets = new Insets(0, 0, 0, 5);
-        gbc_textField_3.fill = GridBagConstraints.HORIZONTAL;
-        gbc_textField_3.gridx = 5;
-        gbc_textField_3.gridy = 2;
-        panel_3.add(textField_3, gbc_textField_3);
-        textField_3.setColumns(10);
-
-        JButton btnSelezionaPercorso = new JButton("Seleziona percorso...");
-        btnSelezionaPercorso.setPreferredSize(new Dimension(135, 25));
-        btnSelezionaPercorso.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                JFileChooser chooser = new JFileChooser();
-                chooser.setCurrentDirectory(new java.io.File("."));
-                chooser.setDialogTitle("Choose the folder");
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                chooser.setAcceptAllFileFilterUsed(false);
-                if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                    System.out.println("getCurrentDirectory(): " + chooser.getSelectedFile());
-                    File folder = chooser.getSelectedFile();
-                    outputFolderPath = folder.getAbsolutePath();
-                    textField_3.setText(outputFolderPath + "\\");
-                }
-            }
-        });
-        GridBagConstraints gbc_btnSelezionaPercorso = new GridBagConstraints();
-        gbc_btnSelezionaPercorso.fill = GridBagConstraints.HORIZONTAL;
-        gbc_btnSelezionaPercorso.insets = new Insets(0, 0, 0, 5);
-        gbc_btnSelezionaPercorso.gridx = 6;
-        gbc_btnSelezionaPercorso.gridy = 2;
-        panel_3.add(btnSelezionaPercorso, gbc_btnSelezionaPercorso);
-
         Component horizontalStrut_1 = Box.createHorizontalStrut(20);
         GridBagConstraints gbc_horizontalStrut_1 = new GridBagConstraints();
         gbc_horizontalStrut_1.insets = new Insets(0, 0, 0, 5);
@@ -589,26 +557,26 @@ public class FrontEnd1 {
                             JOptionPane.ERROR_MESSAGE);
                 } else {
                     inputFilePath = textField.getText();
-                    try {
+                    /*try {
                         l = Loader.generateList(inputFilePath);
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(frame, "Errore nel file di input.", "Errore", JOptionPane.ERROR_MESSAGE);
-                    }
-
-                    File f = new File(textField_3.getText());
-                    outputFolderPath = f.getParent();
+                    }*/
 
                     evento = new Event(textFieldLuogo.getText(), textFieldLuogo.getText(), (String) comboBoxProvincia.getSelectedItem(), new GregorianCalendar(anno, mese, giorno, ore, minuti), l);
-                    evento.assignNumber();
-                    evento.toString();
-                    evento.assignQR(outputFolderPath);
 
                     try {
-                        Loader.createOutput(evento.getAttendee_number(), textField_3.getText());
+                        evento.generateList(inputFilePath);
                     } catch (Exception e) {
+                        e.printStackTrace();
                         JOptionPane.showMessageDialog(frame, "Errore nel file di output.", "Errore", JOptionPane.ERROR_MESSAGE);
                     }
 
+                    evento.toString();
+                    File dir = new File(inputFilePath);
+                    evento.assignQR(dir.getParent());
+                    
+                    
                     panelCreaEvento.setVisible(false);
                     panelInviaMail.setVisible(true);
                     frame.setBounds(100, 100, 450, 300);
@@ -739,6 +707,26 @@ public class FrontEnd1 {
         JButton btnNewButton_10 = new JButton("Annulla");
         panel_11.add(btnNewButton_10);
 
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent evt) {
+        progressBar.setVisible(true);
+        btnNewButton_5.setEnabled(false);
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        File dir = new File(inputFilePath);
+        mailer = new Mailer(evento, dir.getParent(), textFieldEmail.getText(), textFieldUsername.getText(), passwordField.getPassword(), textFieldSMTP.getText(), textFieldSMTPPort.getText());
+        mailer.addPropertyChangeListener(this);
+        mailer.execute();
+        frame.setCursor(null);
+        btnNewButton_5.setEnabled(true);
+    }
+
+    public void propertyChange(PropertyChangeEvent evt) {
+        if ("progress" == evt.getPropertyName()) {
+            int progress = (Integer) evt.getNewValue();
+            progressBar.setValue(progress);
+        }
     }
 
     private boolean isValidDate(int giorno, int mese, int anno) {

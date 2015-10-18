@@ -44,7 +44,18 @@ public class Loader {
                     if(tmp > cols) cols = tmp;
                 }
             }
-
+            
+            /* We set the titls of the cell */
+            row = sheet.getRow(0);
+            cell = row.createCell(4);
+            cell.setCellValue("Numero assegnato");
+            cell = row.createCell(5);
+            cell.setCellValue("Ora entrata");
+            cell = row.createCell(6);
+            cell.setCellValue("Ora uscita");
+            
+            
+            
             for(int r = 1; r < rows; r++) {
                 row = sheet.getRow(r);
                 if(row != null) {
@@ -67,6 +78,8 @@ public class Loader {
                         if(cell != null && c==3){
                             p.setEmail(cell.getStringCellValue());
                         }
+
+
                     }
 
 		            /* Finally we add it to the list */
@@ -223,13 +236,15 @@ public class Loader {
             for (int r = 1; r < rows; r++) {
                 row = sheet.getRow(r);
                 if (row != null) {
-                    cell = row.getCell(3);
+                    cell = row.getCell(4);
                     int cellValue = (int) cell.getNumericCellValue();
                     if (participantHashMap.containsKey(cellValue)) {
                         Participant p1 = participantHashMap.get(cellValue);
-                        cell = row.getCell(4);
-                        cell.setCellValue(p1.getEntrataString());
+                        row.createCell(5);
                         cell = row.getCell(5);
+                        cell.setCellValue(p1.getEntrataString());
+                        row.createCell(6);
+                        cell = row.getCell(6);
                         cell.setCellValue(p1.getUscitaString());
                     }
                 }

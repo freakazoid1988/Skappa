@@ -10,12 +10,18 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import utils.Person;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
@@ -27,6 +33,7 @@ public class Event {
     private HashMap<Integer, BufferedImage> attendee_qr;
     private LinkedList<Person> attendees;
     private String name, location, province;
+
     public Event(String name, String location, String province, GregorianCalendar date, LinkedList<Person> attendees){
         this.attendees = attendees;
         attendee_number = new HashMap<Integer, Person>();
@@ -53,6 +60,100 @@ public class Event {
 			/* Finally we add the pair <Random number, Person> to the Map */
             attendee_number.put(randomCode, p);
         }
+    }
+
+    public LinkedList<Person> generateList(String path) {
+        LinkedList<Person> attendees_list = new LinkedList<Person>();
+        try {
+            XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(path));
+            XSSFSheet sheet = wb.getSheetAt(0);
+            XSSFRow row;
+            XSSFCell cell;
+
+            int rows; // No of rows
+            rows = sheet.getPhysicalNumberOfRows();
+
+            int cols = 0; // No of columns
+            int tmp = 0;
+
+		    /* This trick ensures that we get the data properly even if it doesn't start from first few rows */
+            for (int i = 0; i < 10 || i < rows; i++) {
+                row = sheet.getRow(i);
+                if (row != null) {
+                    tmp = sheet.getRow(i).getPhysicalNumberOfCells();
+                    if (tmp > cols) cols = tmp;
+                }
+            }
+            
+            /* We set the titls of the cell */
+            row = sheet.getRow(0);
+            cell = row.createCell(4);
+            cell.setCellValue("Numero assegnato");
+            cell = row.createCell(5);
+            cell.setCellValue("Ora entrata");
+            cell = row.createCell(6);
+            cell.setCellValue("Ora uscita");
+
+
+            for (int r = 1; r < rows; r++) {
+                row = sheet.getRow(r);
+                if (row != null) {
+
+		        	/* We create the object */
+                    Person p = new Person();
+
+		        	/* Now we fill in all the values */
+                    for (int c = 0; c < 5; c++) {
+                        cell = row.getCell(c);
+                        if (cell != null && c == 0) {
+                            p.setID((int) cell.getNumericCellValue());
+                        }
+                        if (cell != null && c == 1) {
+                            p.setName(cell.getStringCellValue());
+                        }
+                        if (cell != null && c == 2) {
+                            p.setSurname(cell.getStringCellValue());
+                        }
+                        if (cell != null && c == 3) {
+                            p.setEmail(cell.getStringCellValue());
+                        }
+                        if (c == 4) {
+                            row.createCell(c);
+                            int randomCode = (int) (Math.random() * 10000);
+
+                        	/* Let's generate a random number and make sure it's unique by checking whether it's already present in the Map */
+                            while (attendee_number.containsKey(randomCode)) {
+                                randomCode = (int) (Math.random() * 10000);
+                            }
+                            
+                            /* We write it into the cell */
+                            cell = row.getCell(c);
+                            cell.setCellValue(randomCode);
+
+                			/* Finally we add the pair <Random number, Person> to the Map */
+                            attendee_number.put(randomCode, p);
+
+                        }
+
+                    }
+
+		            /* Finally we add it to the list */
+                    attendees_list.add(p);
+                }
+            }
+
+            FileOutputStream outputFile = new FileOutputStream(new File(path));
+            //write changes
+            wb.write(outputFile);
+            //close the stream
+            outputFile.close();
+            wb.close();
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        return attendees_list;
     }
 
     public void assignQR(String path) {
