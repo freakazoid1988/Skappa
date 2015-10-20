@@ -107,7 +107,7 @@ public class FrontEnd1 implements ActionListener, PropertyChangeListener {
      */
     private void initialize() {
         frame = new JFrame("SkAppA");
-        frame.setBounds(100, 100, 750, 450);
+        frame.setBounds(100, 100, 750, 400);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -563,8 +563,8 @@ public class FrontEnd1 implements ActionListener, PropertyChangeListener {
                         JOptionPane.showMessageDialog(frame, "Errore nel file di input.", "Errore", JOptionPane.ERROR_MESSAGE);
                     }*/
 
-                    evento = new Event(textFieldLuogo.getText(), textFieldLuogo.getText(), (String) comboBoxProvincia.getSelectedItem(), new GregorianCalendar(anno, mese, giorno, ore, minuti), l);
-
+                    evento = new Event(textFieldNome.getText(), textFieldLuogo.getText(), (String) comboBoxProvincia.getSelectedItem(), new GregorianCalendar(anno, mese, giorno, ore, minuti), l);
+                    
                     try {
                         evento.generateList(inputFilePath);
                     } catch (Exception e) {
@@ -575,11 +575,11 @@ public class FrontEnd1 implements ActionListener, PropertyChangeListener {
                     evento.toString();
                     File dir = new File(inputFilePath);
                     evento.assignQR(dir.getParent());
-                    
-                    
+
+
+                    frame.setBounds(100, 100, 750, 400);
                     panelCreaEvento.setVisible(false);
-                    panelInviaMail.setVisible(true);
-                    frame.setBounds(100, 100, 450, 300);
+                    panelInviaMail.setVisible(true);                  
                 }
             }
 
@@ -713,12 +713,10 @@ public class FrontEnd1 implements ActionListener, PropertyChangeListener {
     public void actionPerformed(ActionEvent evt) {
         progressBar.setVisible(true);
         btnNewButton_5.setEnabled(false);
-        frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         File dir = new File(inputFilePath);
-        mailer = new Mailer(evento, dir.getParent(), textFieldEmail.getText(), textFieldUsername.getText(), passwordField.getPassword(), textFieldSMTP.getText(), textFieldSMTPPort.getText());
+        mailer = new Mailer(frame, evento, dir.getParent(), textFieldEmail.getText(), textFieldUsername.getText(), passwordField.getPassword(), textFieldSMTP.getText(), textFieldSMTPPort.getText());
         mailer.addPropertyChangeListener(this);
         mailer.execute();
-        frame.setCursor(null);
         btnNewButton_5.setEnabled(true);
     }
 
