@@ -108,8 +108,8 @@ public class FrontEnd1 implements ActionListener, PropertyChangeListener {
     private void initialize() {
         frame = new JFrame("SkAppA");
         frame.setBounds(100, 100, 750, 450);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		/*  */
         ImageIcon imIcon = new

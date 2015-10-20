@@ -63,8 +63,6 @@ public class Mailer extends SwingWorker<Void, Void> {
     public boolean createMessage(Person p, int key) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
 
-        connect();
-
         try {
             // String home = System.getProperty("user.home");
             File QRDir = new File(path + "/QRs/");
@@ -74,10 +72,10 @@ public class Mailer extends SwingWorker<Void, Void> {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(p.getEmail()));
             message.setSubject("Partecipazione evento");
             BodyPart messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setText("Gentile " + p.getName() + ", La informiamo che si e' prenotato all'evento " + "'"
+            messageBodyPart.setText("Gentile " + p.getName() + ", La informiamo che si è prenotato all'evento " + "'"
                     + ev.getName() + "'" + " in luogo " + ev.getLocation() + " (" + ev.getProvince() + ")"
-                    + ", il quale si terra' in data " + sdf.format(ev.getDate().getTime())
-                    + ". In allegato trovera' il codice QR che Le e' stato assegnato. \n\n\n Cordiali saluti, SKappA.");
+                    + ", il quale si terrà in data " + sdf.format(ev.getDate().getTime())
+                    + ". In allegato troverà il codice QR che Le è stato assegnato. \n\n\n Cordiali saluti, SKappA.");
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);
             messageBodyPart = new MimeBodyPart();
@@ -102,6 +100,7 @@ public class Mailer extends SwingWorker<Void, Void> {
         setProgress(progress);
         int totality = ev.getAttendee_number().size();
         double counter = 0;
+        connect();
         for (Map.Entry<Integer, Person> entry : ev.getAttendeeNumber().entrySet()) {
             Person p = entry.getValue();
             createMessage(p, entry.getKey());

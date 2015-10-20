@@ -102,22 +102,27 @@ public class Event {
 		        	/* We create the object */
                     Person p = new Person();
 
+                    boolean isEmpty = false;
+                    
 		        	/* Now we fill in all the values */
                     for (int c = 0; c < 5; c++) {
-                        cell = row.getCell(c);
-                        if (cell != null && c == 0) {
+                        cell = row.getCell(c, XSSFRow.RETURN_BLANK_AS_NULL);
+                        if (cell == null) {
+                            isEmpty = true;
+                        }
+                        if (cell != null && c == 0 && !isEmpty) {
                             p.setID((int) cell.getNumericCellValue());
                         }
-                        if (cell != null && c == 1) {
+                        if (cell != null && c == 1 && !isEmpty) {
                             p.setName(cell.getStringCellValue());
                         }
-                        if (cell != null && c == 2) {
+                        if (cell != null && c == 2 && !isEmpty) {
                             p.setSurname(cell.getStringCellValue());
                         }
-                        if (cell != null && c == 3) {
+                        if (cell != null && c == 3 && !isEmpty) {
                             p.setEmail(cell.getStringCellValue());
                         }
-                        if (c == 4) {
+                        if (c == 4 && !isEmpty) {
                             row.createCell(c);
                             int randomCode = (int) (Math.random() * 10000);
 
