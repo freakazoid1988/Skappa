@@ -105,24 +105,25 @@ public class Event {
                     boolean isEmpty = false;
                     
 		        	/* Now we fill in all the values */
+                    inner:
                     for (int c = 0; c < 5; c++) {
                         cell = row.getCell(c, XSSFRow.RETURN_BLANK_AS_NULL);
-                        if (cell == null) {
-                            isEmpty = true;
+                        if (cell == null && c == 0) {
+                            break inner;
                         }
-                        if (cell != null && c == 0 && !isEmpty) {
+                        if (cell != null && c == 0) {
                             p.setID((int) cell.getNumericCellValue());
                         }
-                        if (cell != null && c == 1 && !isEmpty) {
+                        if (cell != null && c == 1) {
                             p.setName(cell.getStringCellValue());
                         }
-                        if (cell != null && c == 2 && !isEmpty) {
+                        if (cell != null && c == 2) {
                             p.setSurname(cell.getStringCellValue());
                         }
-                        if (cell != null && c == 3 && !isEmpty) {
+                        if (cell != null && c == 3) {
                             p.setEmail(cell.getStringCellValue());
                         }
-                        if (c == 4 && !isEmpty) {
+                        if (c == 4) {
                             row.createCell(c);
                             int randomCode = (int) (Math.random() * 10000);
 

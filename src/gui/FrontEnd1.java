@@ -564,7 +564,7 @@ public class FrontEnd1 implements ActionListener, PropertyChangeListener {
                     }*/
 
                     evento = new Event(textFieldNome.getText(), textFieldLuogo.getText(), (String) comboBoxProvincia.getSelectedItem(), new GregorianCalendar(anno, mese, giorno, ore, minuti), l);
-                    
+                    frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     try {
                         evento.generateList(inputFilePath);
                     } catch (Exception e) {
@@ -576,7 +576,8 @@ public class FrontEnd1 implements ActionListener, PropertyChangeListener {
                     File dir = new File(inputFilePath);
                     evento.assignQR(dir.getParent());
 
-
+                    frame.setCursor(null);
+                    
                     frame.setBounds(100, 100, 750, 400);
                     panelCreaEvento.setVisible(false);
                     panelInviaMail.setVisible(true);                  
@@ -699,7 +700,7 @@ public class FrontEnd1 implements ActionListener, PropertyChangeListener {
                 File f = new File(txtOutputFilePath);
                 excelOutputFilePath = textField_1.getText();
                 Loader.writeInOut(excelOutputFilePath, Loader.loadParticipants(f));
-                JOptionPane.showMessageDialog(frame, "Match eseguito!", "", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Associazione degli orari eseguita!", "", JOptionPane.PLAIN_MESSAGE);
             }
         });
         panel_11.add(btnNewButton_9);
